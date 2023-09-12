@@ -1,0 +1,153 @@
+﻿@model Teko_test_task.ViewModels.VacationSchedule
+@{
+    ViewData["Title"] = "График отпусков";
+}
+
+<div class="d-flex justify-content-between mb-5">
+    <h1>График отпусков</h1>
+    <form method="post" asp-controller="Vacation" asp-action="GenerateVacation">
+        <button type="submit" class="btn btn-primary" @(Model.Employees.Count != 0 && Model.Vacations.Count == 0 ? "" : "disabled")>Генерация отпусков</button>
+    </form>
+</div>
+
+<form method="get" asp-controller="Vacation" asp-action="Index">
+    <div class="row mb-3">
+        <div class="col-4">
+            <input class="form-control" list="FIOs" name="FIO" placeholder="Введите ФИО сотрудника для поиска">
+            <datalist id="FIOs">
+                @foreach (var employee in Model.Employees)
+                {
+                    <option value="@employee.FIO" />
+                }
+            </datalist>
+        </div>
+        <div class="col-3">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+            <a asp-controller="Vacation" asp-action="NewVacation" class="btn btn-primary">Новый отпуск</a>
+        </div>
+        
+    </div>
+</form>
+
+<div class="text-center mb-5">
+    @if (Model.vacation != null)
+    {
+        <div>
+            <b>
+                Текущий сотрудник: @Model.vacation.Employee.FIO - @Model.vacation.Employee.Position - @Model.vacation.Employee.Age
+            </b>
+        </div>
+        <div>
+            <b>Последний отпуск: @Model.vacation.StartDate - @Model.vacation.EndDate</b>
+        </div>
+        
+    }
+</div>
+
+<div>
+    <b>Пересечение сотрудников моего отдела, моложе 30 лет</b>
+    <table class="table">
+        <tr><th>ФИО</th><th>Начало отпуска</th><th>Конец отпуска</th><th>Возраст</th><th>Должность</th></tr>
+        @if (Model.DepartmentUnder30 != null)
+        {
+            @if (Model.DepartmentUnder30.Count != 0)
+            {
+                @foreach (var vacation in Model.DepartmentUnder30)
+                {
+                    <tr>
+                        <td>@vacation.Employee.FIO</td>
+                        <td>@vacation.StartDate</td>
+                        <td>@vacation.EndDate</td>
+                        <td>@vacation.Employee.Age</td>
+                        <td>@vacation.Employee.Position</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>Пересечений нет</td>
+                </tr>
+            }
+        }
+    </table>
+    <b>Пересечение сотрудников-женщин не из моего отдела, возраст от 30 до 50 лет</b>
+    <table class="table">
+        <tr><th>ФИО</th><th>Начало отпуска</th><th>Конец отпуска</th><th>Возраст</th><th>Должность</th></tr>
+        @if (Model.WomenOver30Under50 != null)
+        {
+            @if (Model.WomenOver30Under50.Count != 0)
+            {
+                @foreach (var vacation in Model.WomenOver30Under50)
+                {
+                    <tr>
+                        <td>@vacation.Employee.FIO</td>
+                        <td>@vacation.StartDate</td>
+                        <td>@vacation.EndDate</td>
+                        <td>@vacation.Employee.Age</td>
+                        <td>@vacation.Employee.Position</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>Пересечений нет</td>
+                </tr>
+            }
+        }       
+    </table>
+    <b>Пересечение сотрудников старше 50 лет</b>
+    <table class="table">
+        <tr><th>ФИО</th><th>Начало отпуска</th><th>Конец отпуска</th><th>Возраст</th><th>Должность</th></tr>
+        @if (Model.EmployeesOver50 != null)
+        {
+            @if (Model.EmployeesOver50.Count != 0)
+        {
+                @foreach (var vacation in Model.EmployeesOver50)
+                {
+                    <tr>
+                        <td>@vacation.Employee.FIO</td>
+                        <td>@vacation.StartDate</td>
+                        <td>@vacation.EndDate</td>
+                        <td>@vacation.Employee.Age</td>
+                        <td>@vacation.Employee.Position</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>Пересечений нет</td>
+                </tr>
+            }
+        }
+    </table>
+    <b>Отпуска без пересечения</b>
+    <table class="table">
+        <tr><th>ФИО</th><th>Начало отпуска</th><th>Конец отпуска</th><th>Возраст</th><th>Должность</th></tr>
+        @if (Model.NoOverlap != null)
+        {
+            @if (Model.NoOverlap.Count != 0)
+            {
+                @foreach (var vacation in Model.NoOverlap)
+                {
+                    <tr>
+                        <td>@vacation.Employee.FIO</td>
+                        <td>@vacation.StartDate</td>
+                        <td>@vacation.EndDate</td>
+                        <td>@vacation.Employee.Age</td>
+                        <td>@vacation.Employee.Position</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>Пересечений нет</td>
+                </tr>
+            }
+        }       
+    </table>
+</div>
+

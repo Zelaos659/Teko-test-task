@@ -1,0 +1,64 @@
+﻿@model Teko_test_task.ViewModels.NewVacationViewModel
+@{
+    ViewData["Title"] = "Новый отпуск";
+}
+
+<form method="post" asp-controller="Vacation" asp-action="NewVacation">
+    <div class="row mb-3">
+        <div class="col-4">
+            <label for="FIO">Текущий сотрудник:</label>
+            <input class="form-control" list="FIOs" name="FIO" id="FIO" placeholder="Введите ФИО сотрудника для поиска">
+            <datalist id="FIOs">
+                @foreach (var employee in Model.Employees)
+                {
+                    <option value="@employee.FIO" />
+                }
+            </datalist>
+        </div>
+        <div class="col-2">
+            <label for="StartDate">Начало отпуска:</label>
+            <input class="form-control" type="date" name="StartDate" id="StartDate">
+        </div>
+        <div class="col-2">
+            <label for="EndDate">Конец отпуска:</label>
+            <input class="form-control" type="date" name="EndDate" id="EndDate" disabled>
+        </div>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Новый отпуск</button>
+    </div>
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+</form>
+
+<script>
+    var startDateInput = document.getElementById("StartDate");
+    var endDateInput = document.getElementById("EndDate");
+
+    var today = new Date();
+
+    var formattedToday = today.toISOString().split('T')[0];
+
+    startDateInput.setAttribute("min", formattedToday);
+
+    startDateInput.addEventListener("change", function () {
+
+        var selectedStartDate = new Date(startDateInput.value);
+
+        var maxEndDate = new Date(selectedStartDate);
+        maxEndDate.setDate(selectedStartDate.getDate() + 14);
+
+        var formattedMaxEndDate = maxEndDate.toISOString().split('T')[0];
+
+        endDateInput.setAttribute("min", startDateInput.value);
+        endDateInput.setAttribute("max", formattedMaxEndDate);
+        endDateInput.removeAttribute("disabled");
+
+    });
+
+    endDateInput.addEventListener("change", function () {
+        submitBtn.removeAttribute("disabled");
+    });
+
+    
+</script>

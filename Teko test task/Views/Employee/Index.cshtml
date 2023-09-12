@@ -1,0 +1,18 @@
+﻿@model Teko_test_task.ViewModels.EmployeeDetails
+@{
+    ViewData["Title"] = "Сотрудники";
+}
+
+<div class="text-center">
+    <h1>Список сотрудников</h1>
+    <ul class="list-group">
+        @foreach (var employee in Model.Employees)
+        {
+            <li class="list-group-item">@employee.FIO - @employee.Position - @employee.Age</li>
+        }
+    </ul>
+    <form method="post" asp-controller="Employee" asp-action="GenerateEmployees">
+        <button type="submit" class="btn btn-primary" @(Model.Employees.Count > 0 ? "disabled" : "")>Генерация сотрудников</button>
+    </form>
+</div>
+
